@@ -19,6 +19,8 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
+    "bun-match-svg": "^0.0.15",
+    "graphics-debug": "^0.0.84",
     "react": "^19.2.4",
     "react-cosmos": "^7.1.1",
     "react-cosmos-plugin-vite": "^7.1.1",
