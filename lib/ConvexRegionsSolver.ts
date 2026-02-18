@@ -27,6 +27,7 @@ export class ConvexRegionsSolver extends BasePipelineSolver<ConvexRegionsCompute
           bounds: instance.inputProblem.bounds,
           vias: instance.inputProblem.vias,
           rects: instance.inputProblem.rects,
+          polygons: instance.inputProblem.polygons,
           clearance: instance.inputProblem.clearance,
         },
       ]

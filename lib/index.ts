@@ -29,6 +29,7 @@ export type {
   MergeCellsStageInput,
   MergeCellsStageOutput,
   Point,
+  Polygon,
   Rect,
   RegionPort,
   Triangle,

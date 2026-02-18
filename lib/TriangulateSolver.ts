@@ -16,6 +16,7 @@ export class TriangulateSolver extends BaseSolver {
   override _step(): void {
     const vias = this.input.vias ?? []
     const rects = this.input.rects ?? []
+    const polygons = this.input.polygons ?? []
     const allTriangles = delaunay(this.input.pts)
     const validTris = filterTris(
       allTriangles,
@@ -24,6 +25,7 @@ export class TriangulateSolver extends BaseSolver {
       vias,
       this.input.clearance,
       rects,
+      polygons,
     )
 
     this.output = {

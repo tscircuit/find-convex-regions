@@ -1,4 +1,4 @@
-import type { Bounds, Point, Rect, Via } from "./types"
+import type { Bounds, Point, Polygon, Rect, Via } from "./types"
 
 const rotatePoint = (localX: number, localY: number, rect: Rect): Point => {
   const cosTheta = Math.cos(rect.ccwRotation)
@@ -12,9 +12,10 @@ const rotatePoint = (localX: number, localY: number, rect: Rect): Point => {
 
 export const genPoints = (
   bounds: Bounds,
-  vias: Via[] = [],
+  vias: Via[],
   clearance: number,
-  rects: Rect[] = [],
+  rects: Rect[],
+  polygons: Polygon[] = [],
 ): Point[] => {
   const points: Point[] = []
   const { minX: x0, maxX: x1, minY: y0, maxY: y1 } = bounds
@@ -67,6 +68,45 @@ export const genPoints = (
       points.push(
         rotatePoint(-halfWidth, halfHeight - t * 2 * halfHeight, rect),
       )
+    }
+  }
+
+  for (const polygon of polygons) {
+    const polyPoints = polygon.points
+    const n = polyPoints.length
+    if (n < 3) continue
+
+    for (let i = 0; i < n; i++) {
+      const p1 = polyPoints[i]!
+      const p2 = polyPoints[(i + 1) % n]!
+
+      // Calculate edge length to determine number of segments
+      const edgeLength = Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2)
+      const edgeSegments = Math.max(2, Math.ceil(edgeLength / 20))
+
+      // Calculate outward normal for the edge
+      const dx = p2.x - p1.x
+      const dy = p2.y - p1.y
+      const len = Math.sqrt(dx * dx + dy * dy)
+      if (len === 0) continue
+
+      // Outward normal (perpendicular to edge, pointing outward)
+      // For CCW polygon, outward normal is (-dy, dx) / len
+      // For CW polygon, it's (dy, -dx) / len
+      // We'll use the convention that positive clearance expands outward
+      const nx = -dy / len
+      const ny = dx / len
+
+      for (let j = 0; j < edgeSegments; j++) {
+        const t = j / edgeSegments
+        const baseX = p1.x + t * dx
+        const baseY = p1.y + t * dy
+        // Offset by clearance in the outward normal direction
+        points.push({
+          x: baseX + clearance * nx,
+          y: baseY + clearance * ny,
+        })
+      }
     }
   }
 

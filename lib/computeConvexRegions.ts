@@ -17,8 +17,9 @@ export const computeConvexRegions = (
   const { bounds, clearance, concavityTolerance } = input
   const vias = input.vias ?? []
   const rects = input.rects ?? []
+  const polygons = input.polygons ?? []
 
-  const pts = genPoints(bounds, vias, clearance, rects)
+  const pts = genPoints(bounds, vias, clearance, rects, polygons)
   const allTriangles = delaunay(pts)
   const validTris = filterTris(
     allTriangles,
@@ -27,6 +28,7 @@ export const computeConvexRegions = (
     vias,
     clearance,
     rects,
+    polygons,
   )
   const { cells, depths } = mergeCells(validTris, pts, concavityTolerance)
 

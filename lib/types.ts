@@ -15,6 +15,10 @@ export type Rect = {
   ccwRotation: number
 }
 
+export type Polygon = {
+  points: Point[]
+}
+
 export type Bounds = {
   minX: number
   maxX: number
@@ -28,6 +32,7 @@ export type ConvexRegionsComputeInput = {
   bounds: Bounds
   vias?: Via[]
   rects?: Rect[]
+  polygons?: Polygon[]
   clearance: number
   concavityTolerance: number
 }
@@ -54,6 +59,7 @@ export type TriangulateStageInput = GeneratePointsStageOutput & {
   bounds: Bounds
   vias?: Via[]
   rects?: Rect[]
+  polygons?: Polygon[]
   clearance: number
 }
 

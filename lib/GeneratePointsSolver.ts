@@ -18,9 +18,16 @@ export class GeneratePointsSolver extends BaseSolver {
   override _step(): void {
     const vias = this.input.vias ?? []
     const rects = this.input.rects ?? []
+    const polygons = this.input.polygons ?? []
 
     this.output = {
-      pts: genPoints(this.input.bounds, vias, this.input.clearance, rects),
+      pts: genPoints(
+        this.input.bounds,
+        vias,
+        this.input.clearance,
+        rects,
+        polygons,
+      ),
     }
     this.stats = { points: this.output.pts.length }
     this.solved = true
