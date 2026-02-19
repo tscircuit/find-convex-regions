@@ -22,7 +22,7 @@ export const concavityDepth = (ring: number[], pts: Point[]): number => {
       const a = hullPoints[i]
       const b = hullPoints[(i + 1) % hullPoints.length]
       if (!a || !b) continue
-      minDistance = Math.min(minDistance, ptSegDist(p, a, b))
+      minDistance = Math.min(minDistance, ptSegDist({ p, a, b }))
     }
     maxDepth = Math.max(maxDepth, minDistance)
   }

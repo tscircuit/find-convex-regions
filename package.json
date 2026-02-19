@@ -35,5 +35,8 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "@flatten-js/core": "^1.6.10"
   }
 }

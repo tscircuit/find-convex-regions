@@ -68,24 +68,76 @@ export class ConvexRegionsSolver extends BasePipelineSolver<ConvexRegionsCompute
       return { points: [], lines: [], rects: [], circles: [], texts: [] }
     }
 
+    // Generate polygon obstacle lines
+    const polygonLines = (this.inputProblem.polygons ?? []).flatMap(
+      (polygon) => {
+        const pts = polygon.points
+        return pts.map((p, i) => {
+          const next = pts[(i + 1) % pts.length]!
+          return {
+            points: [
+              { x: p.x, y: p.y },
+              { x: next.x, y: next.y },
+            ],
+            strokeColor: "#ff9f43",
+            strokeWidth: 2,
+          }
+        })
+      },
+    )
+
+    // Generate rect obstacle lines
+    const rectLines = (this.inputProblem.rects ?? []).flatMap((rect) => {
+      const halfW = rect.width / 2
+      const halfH = rect.height / 2
+      const cos = Math.cos(rect.ccwRotation)
+      const sin = Math.sin(rect.ccwRotation)
+
+      const corners = [
+        { lx: -halfW, ly: -halfH },
+        { lx: halfW, ly: -halfH },
+        { lx: halfW, ly: halfH },
+        { lx: -halfW, ly: halfH },
+      ].map(({ lx, ly }) => ({
+        x: rect.center.x + lx * cos - ly * sin,
+        y: rect.center.y + lx * sin + ly * cos,
+      }))
+
+      return corners.map((p, i) => {
+        const next = corners[(i + 1) % corners.length]!
+        return {
+          points: [
+            { x: p.x, y: p.y },
+            { x: next.x, y: next.y },
+          ],
+          strokeColor: "#ff6b6b",
+          strokeWidth: 2,
+        }
+      })
+    })
+
     return {
       points: result.pts.map((pt) => ({
         x: pt.x,
         y: pt.y,
         color: "#38b6ff",
       })),
-      lines: result.regions.flatMap((region) =>
-        region.map((p, i) => {
-          const next = region[(i + 1) % region.length] ?? p
-          return {
-            points: [
-              { x: p.x, y: p.y },
-              { x: next.x, y: next.y },
-            ],
-            strokeColor: "#4ecb82",
-          }
-        }),
-      ),
+      lines: [
+        ...result.regions.flatMap((region) =>
+          region.map((p, i) => {
+            const next = region[(i + 1) % region.length] ?? p
+            return {
+              points: [
+                { x: p.x, y: p.y },
+                { x: next.x, y: next.y },
+              ],
+              strokeColor: "#4ecb82",
+            }
+          }),
+        ),
+        ...polygonLines,
+        ...rectLines,
+      ],
       rects: [],
       circles: (this.inputProblem.vias ?? []).map((via) => ({
         center: { x: via.center.x, y: via.center.y },

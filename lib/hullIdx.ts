@@ -22,7 +22,7 @@ export const hullIdx = (indices: number[], pts: Point[]): number[] => {
     while (lower.length >= 2) {
       const prev2 = lower[lower.length - 2]
       const prev1 = lower[lower.length - 1]
-      if (!prev2 || !prev1 || cross(prev2, prev1, p) > 1e-10) break
+      if (!prev2 || !prev1 || cross({ o: prev2, a: prev1, b: p }) > 1e-10) break
       lower.pop()
     }
     lower.push(p)
@@ -34,7 +34,7 @@ export const hullIdx = (indices: number[], pts: Point[]): number[] => {
     while (upper.length >= 2) {
       const prev2 = upper[upper.length - 2]
       const prev1 = upper[upper.length - 1]
-      if (!prev2 || !prev1 || cross(prev2, prev1, p) > 1e-10) break
+      if (!prev2 || !prev1 || cross({ o: prev2, a: prev1, b: p }) > 1e-10) break
       upper.pop()
     }
     upper.push(p)

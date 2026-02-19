@@ -6,11 +6,12 @@ import type { Point, Triangle } from "./types"
 const edgeKey = (a: number, b: number) =>
   a < b ? a * 100000 + b : b * 100000 + a
 
-export const mergeCells = (
-  triangles: Triangle[],
-  pts: Point[],
-  concavityTolerance: number,
-): { cells: number[][]; depths: number[] } => {
+export const mergeCells = (params: {
+  triangles: Triangle[]
+  pts: Point[]
+  concavityTolerance: number
+}): { cells: number[][]; depths: number[] } => {
+  const { triangles, pts, concavityTolerance } = params
   if (!triangles.length) return { cells: [], depths: [] }
 
   const cells = triangles.map(([a, b, c]) => {
@@ -18,7 +19,7 @@ export const mergeCells = (
     const pb = pts[b]
     const pc = pts[c]
     if (!pa || !pb || !pc) return [a, b, c]
-    return cross(pa, pb, pc) < 0 ? [a, c, b] : [a, b, c]
+    return cross({ o: pa, a: pb, b: pc }) < 0 ? [a, c, b] : [a, b, c]
   })
 
   let changed = true

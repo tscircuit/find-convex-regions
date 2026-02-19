@@ -6,7 +6,12 @@ type Circumcircle = {
   r2: number
 }
 
-export const circumcircle = (a: Point, b: Point, c: Point): Circumcircle => {
+export const circumcircle = (params: {
+  a: Point
+  b: Point
+  c: Point
+}): Circumcircle => {
+  const { a, b, c } = params
   const d = 2 * (a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y))
   if (Math.abs(d) < 1e-10) return { x: 0, y: 0, r2: 1e18 }
 

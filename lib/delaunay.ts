@@ -47,7 +47,7 @@ export const delaunay = (rawPoints: Point[]): Triangle[] => {
   }
 
   let triangles: TriangleNode[] = [
-    { a: s0, b: s1, c: s2, cc: circumcircle(s0, s1, s2) },
+    { a: s0, b: s1, c: s2, cc: circumcircle({ a: s0, b: s1, c: s2 }) },
   ]
 
   for (const p of points) {
@@ -82,7 +82,12 @@ export const delaunay = (rawPoints: Point[]): Triangle[] => {
 
     triangles = triangles.filter((triangle) => !badSet.has(triangle))
     for (const [ea, eb] of boundaryEdges) {
-      triangles.push({ a: ea, b: eb, c: p, cc: circumcircle(ea, eb, p) })
+      triangles.push({
+        a: ea,
+        b: eb,
+        c: p,
+        cc: circumcircle({ a: ea, b: eb, c: p }),
+      })
     }
   }
 

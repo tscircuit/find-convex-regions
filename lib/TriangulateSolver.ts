@@ -18,15 +18,15 @@ export class TriangulateSolver extends BaseSolver {
     const rects = this.input.rects ?? []
     const polygons = this.input.polygons ?? []
     const allTriangles = delaunay(this.input.pts)
-    const validTris = filterTris(
-      allTriangles,
-      this.input.pts,
-      this.input.bounds,
+    const validTris = filterTris({
+      triangles: allTriangles,
+      pts: this.input.pts,
+      bounds: this.input.bounds,
       vias,
-      this.input.clearance,
+      clearance: this.input.clearance,
       rects,
       polygons,
-    )
+    })
 
     this.output = {
       pts: this.input.pts,

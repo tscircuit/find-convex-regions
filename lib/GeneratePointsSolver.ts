@@ -1,6 +1,6 @@
 import { BaseSolver } from "@tscircuit/solver-utils"
 import type { GraphicsObject } from "graphics-debug"
-import { genPoints } from "./genPoints"
+import { generateBoundaryPoints } from "./generateBoundaryPoints"
 import type {
   ConvexRegionsComputeInput,
   GeneratePointsStageOutput,
@@ -21,13 +21,13 @@ export class GeneratePointsSolver extends BaseSolver {
     const polygons = this.input.polygons ?? []
 
     this.output = {
-      pts: genPoints(
-        this.input.bounds,
+      pts: generateBoundaryPoints({
+        bounds: this.input.bounds,
         vias,
-        this.input.clearance,
+        clearance: this.input.clearance,
         rects,
         polygons,
-      ),
+      }),
     }
     this.stats = { points: this.output.pts.length }
     this.solved = true

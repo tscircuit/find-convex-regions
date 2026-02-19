@@ -1,6 +1,6 @@
 import { delaunay } from "./delaunay"
 import { filterTris } from "./filterTris"
-import { genPoints } from "./genPoints"
+import { generateBoundaryPoints } from "./generateBoundaryPoints"
 import { hullIdx } from "./hullIdx"
 import { mergeCells } from "./mergeCells"
 import type {
@@ -19,18 +19,28 @@ export const computeConvexRegions = (
   const rects = input.rects ?? []
   const polygons = input.polygons ?? []
 
-  const pts = genPoints(bounds, vias, clearance, rects, polygons)
+  const pts = generateBoundaryPoints({
+    bounds,
+    vias,
+    clearance,
+    rects,
+    polygons,
+  })
   const allTriangles = delaunay(pts)
-  const validTris = filterTris(
-    allTriangles,
+  const validTris = filterTris({
+    triangles: allTriangles,
     pts,
     bounds,
     vias,
     clearance,
     rects,
     polygons,
-  )
-  const { cells, depths } = mergeCells(validTris, pts, concavityTolerance)
+  })
+  const { cells, depths } = mergeCells({
+    triangles: validTris,
+    pts,
+    concavityTolerance,
+  })
 
   const regions = cells.map((cell) =>
     cell.map((i) => pts[i]).filter(isDefinedPoint),

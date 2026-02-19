@@ -1,6 +1,7 @@
 import type { Point } from "./types"
 
-export const ptSegDist = (p: Point, a: Point, b: Point): number => {
+export const ptSegDist = (params: { p: Point; a: Point; b: Point }): number => {
+  const { p, a, b } = params
   const dx = b.x - a.x
   const dy = b.y - a.y
   const l2 = dx * dx + dy * dy

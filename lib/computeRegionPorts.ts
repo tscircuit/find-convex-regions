@@ -1,12 +1,13 @@
 import { dist2 } from "./dist2"
 import type { Bounds, Point, RegionPort, Via } from "./types"
 
-export const computeRegionPorts = (
-  regions: Point[][],
-  bounds: Bounds,
-  vias: Via[],
-  clearance: number,
-): RegionPort[] => {
+export const computeRegionPorts = (params: {
+  regions: Point[][]
+  bounds: Bounds
+  vias: Via[]
+  clearance: number
+}): RegionPort[] => {
+  const { regions, bounds, vias, clearance } = params
   const result: RegionPort[] = []
 
   for (let regionIndex = 0; regionIndex < regions.length; regionIndex++) {

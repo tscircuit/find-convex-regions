@@ -13,11 +13,11 @@ export class MergeCellsSolver extends BaseSolver {
   }
 
   override _step(): void {
-    const merged = mergeCells(
-      this.input.validTris,
-      this.input.pts,
-      this.input.concavityTolerance,
-    )
+    const merged = mergeCells({
+      triangles: this.input.validTris,
+      pts: this.input.pts,
+      concavityTolerance: this.input.concavityTolerance,
+    })
 
     this.output = {
       pts: this.input.pts,

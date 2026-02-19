@@ -36,3 +36,6 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .cursor
 .vscode
 .vercel
+
+# Diff snapshots
+**/*.diff.png
