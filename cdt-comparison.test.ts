@@ -107,9 +107,9 @@ test("CDT pipeline: thin horizontal wall — solver SVG snapshot", async () => {
   await expect(solver.visualize()).toMatchGraphicsSvg(import.meta.path)
 })
 
-// --- filterTris is redundant in CDT mode ---
+// --- filterTris is redundant in CDT mode when obstacles don't overlap ---
 
-test("CDT: filterTris removes zero triangles", () => {
+test("CDT: filterTris removes zero triangles when no obstacles overlap", () => {
   const inputs = [
     createThinHorizontalWallInput(true),
     createDiagonalWallInput(true),
@@ -118,14 +118,19 @@ test("CDT: filterTris removes zero triangles", () => {
   ]
 
   for (const input of inputs) {
-    const { pts, constraintEdges } = generateBoundaryPointsWithEdges({
-      bounds: input.bounds,
-      vias: input.vias ?? [],
-      clearance: input.clearance,
-      rects: input.rects ?? [],
-      polygons: input.polygons ?? [],
-      viaSegments: input.viaSegments,
-    })
+    const { pts, constraintEdges, hadCrossings } =
+      generateBoundaryPointsWithEdges({
+        bounds: input.bounds,
+        vias: input.vias ?? [],
+        clearance: input.clearance,
+        rects: input.rects ?? [],
+        polygons: input.polygons ?? [],
+        viaSegments: input.viaSegments,
+      })
+
+    // These inputs have non-overlapping obstacles
+    expect(hadCrossings).toBe(false)
+
     const cdtTris = constrainedDelaunay(pts, constraintEdges)
     const filtered = filterTris({
       triangles: cdtTris,

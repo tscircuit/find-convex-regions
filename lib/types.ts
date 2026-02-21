@@ -66,8 +66,6 @@ export type TriangulateStageInput = GeneratePointsStageOutput & {
   polygons?: Polygon[]
   clearance: number
   useConstrainedDelaunay?: boolean
-  constraintEdges?: [number, number][]
-  hadCrossings?: boolean
 }
 
 export type TriangulateStageOutput = GeneratePointsStageOutput & {

@@ -463,7 +463,7 @@ export default function App() {
             />
             <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>
               {useCDT
-                ? "CDT enforces obstacle boundaries as edges. filterTris is skipped."
+                ? "CDT enforces obstacle boundaries as edges. filterTris is skipped unless obstacles overlap."
                 : "Unconstrained Bowyer-Watson. filterTris removes obstacle-crossing triangles."}
             </div>
           </div>
