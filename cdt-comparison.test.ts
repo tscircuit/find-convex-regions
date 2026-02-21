@@ -143,16 +143,25 @@ test("CDT: filterTris removes zero triangles", () => {
 
 // --- viaSegments defaults ---
 
-test("CDT defaults to 8-segment vias, unconstrained defaults to 24", () => {
+test("CDT is enabled by default (omitting useConstrainedDelaunay uses CDT)", () => {
   const base = createStaggeredJumpersInput()
   const nVias = (base.vias ?? []).length
 
-  const cdt = computeConvexRegions({ ...base, useConstrainedDelaunay: true })
-  const uc = computeConvexRegions({ ...base, useConstrainedDelaunay: false })
+  const defaultResult = computeConvexRegions(base)
+  const explicitCdt = computeConvexRegions({
+    ...base,
+    useConstrainedDelaunay: true,
+  })
+  const explicitUc = computeConvexRegions({
+    ...base,
+    useConstrainedDelaunay: false,
+  })
 
-  // 40 bounds points + viaSegments * nVias
-  expect(cdt.pts.length).toBe(40 + 8 * nVias)
-  expect(uc.pts.length).toBe(40 + 24 * nVias)
+  // Default should match explicit CDT (8-segment vias)
+  expect(defaultResult.pts.length).toBe(40 + 8 * nVias)
+  expect(defaultResult.pts.length).toBe(explicitCdt.pts.length)
+  // Explicit unconstrained uses 24-segment vias
+  expect(explicitUc.pts.length).toBe(40 + 24 * nVias)
 })
 
 test("viaSegments override is respected", () => {

@@ -21,7 +21,10 @@ export class TriangulateSolver extends BaseSolver {
 
     let validTris: import("./types").Triangle[]
 
-    if (this.input.useConstrainedDelaunay && this.input.constraintEdges) {
+    if (
+      this.input.useConstrainedDelaunay !== false &&
+      this.input.constraintEdges
+    ) {
       const cdtTris = constrainedDelaunay(
         this.input.pts,
         this.input.constraintEdges,

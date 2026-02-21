@@ -12,7 +12,7 @@ const bounds = { minX: 0, maxX: W, minY: 0, maxY: H }
 
 export default function StaggeredViasFixture() {
   const [cl, setCl] = useState(8)
-  const [useCDT, setUseCDT] = useState(false)
+  const [useCDT, setUseCDT] = useState(true)
   const [viaSegments, setViaSegments] = useState(undefined)
   const [concavityTol, setConcavityTol] = useState(0)
   const [showTris, setShowTris] = useState(false)

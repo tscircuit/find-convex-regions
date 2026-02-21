@@ -21,7 +21,7 @@ export class GeneratePointsSolver extends BaseSolver {
     const rects = this.input.rects ?? []
     const polygons = this.input.polygons ?? []
 
-    if (this.input.useConstrainedDelaunay) {
+    if (this.input.useConstrainedDelaunay !== false) {
       const result = generateBoundaryPointsWithEdges({
         bounds: this.input.bounds,
         vias,

@@ -84,7 +84,7 @@ const solver = new ConvexRegionsSolver({
 
 ### Constrained Delaunay Triangulation (CDT)
 
-Set `useConstrainedDelaunay: true` to force obstacle boundary edges into the triangulation. This prevents triangle edges from crossing through obstacles, which the unconstrained approach can only approximate via centroid filtering.
+CDT is enabled by default. It forces obstacle boundary edges into the triangulation, preventing triangle edges from crossing through obstacles — a structural guarantee the unconstrained approach can only approximate via centroid filtering. To disable CDT and use the legacy unconstrained Bowyer-Watson approach:
 
 ```ts
 const solver = new ConvexRegionsSolver({
@@ -95,7 +95,7 @@ const solver = new ConvexRegionsSolver({
   ],
   clearance: 8,
   concavityTolerance: 0,
-  useConstrainedDelaunay: true,
+  useConstrainedDelaunay: false,  // use legacy unconstrained approach
 })
 ```
 
@@ -160,7 +160,7 @@ type Bounds  = { minX: number; maxX: number; minY: number; maxY: number }
 | `polygons` | Arbitrary closed polygon obstacles (3+ vertices). |
 | `clearance` | Buffer distance added around every obstacle boundary. |
 | `concavityTolerance` | `0` for strictly convex regions. Higher values allow shallow concavity when merging adjacent cells, producing fewer, larger regions. |
-| `useConstrainedDelaunay` | Use CDT instead of unconstrained Bowyer-Watson. Prevents edge crossings through obstacles. Uses minimal sampling (corner-only rects, octagon vias). Default `false`. |
+| `useConstrainedDelaunay` | Use CDT instead of unconstrained Bowyer-Watson. Prevents edge crossings through obstacles. Uses minimal sampling (corner-only rects, octagon vias). Default `true`. Set to `false` to use the legacy unconstrained approach. |
 | `viaSegments` | Number of points per via boundary ring. Default `8` with CDT, `24` without. |
 
 ## Output

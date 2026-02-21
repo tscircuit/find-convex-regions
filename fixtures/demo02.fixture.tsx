@@ -20,7 +20,7 @@ export default function App() {
   const [showRegions, setShowRegions] = useState(true)
   const [showHull, setShowHull] = useState(false)
   const [showPorts, setShowPorts] = useState(true)
-  const [useCDT, setUseCDT] = useState(false)
+  const [useCDT, setUseCDT] = useState(true)
   const [viaSegments, setViaSegments] = useState<number | undefined>(undefined)
   const [dragIdx, setDragIdx] = useState(null)
   const [hoverRegion, setHoverRegion] = useState(null)

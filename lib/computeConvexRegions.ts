@@ -24,7 +24,7 @@ export const computeConvexRegions = (
   let pts: import("./types").Point[]
   let validTris: import("./types").Triangle[]
 
-  if (input.useConstrainedDelaunay) {
+  if (input.useConstrainedDelaunay !== false) {
     const result = generateBoundaryPointsWithEdges({
       bounds,
       vias,

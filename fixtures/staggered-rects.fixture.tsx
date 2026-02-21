@@ -28,7 +28,7 @@ const polyPoints = (points: Point[]): string =>
 
 export default function StaggeredRectsFixture() {
   const [cl, setCl] = useState(8)
-  const [useCDT, setUseCDT] = useState(false)
+  const [useCDT, setUseCDT] = useState(true)
   const [concavityTol, setConcavityTol] = useState(0)
   const [showTris, setShowTris] = useState(false)
   const [showRegions, setShowRegions] = useState(true)
