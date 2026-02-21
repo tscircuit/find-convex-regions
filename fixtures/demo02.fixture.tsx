@@ -537,8 +537,7 @@ export default function App() {
                 Vias: <span style={{ color: "#ff6b6b" }}>{vias.length}</span>
               </div>
               <div>
-                Points:{" "}
-                <span style={{ color: "#aaa" }}>{pts.length}</span>
+                Points: <span style={{ color: "#aaa" }}>{pts.length}</span>
               </div>
               <div>
                 Triangles:{" "}

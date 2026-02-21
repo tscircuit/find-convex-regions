@@ -10,7 +10,14 @@ export const generateBoundaryPoints = (params: {
   polygons?: Polygon[]
   viaSegments?: number
 }): Point[] => {
-  const { bounds, vias, clearance, rects, polygons = [], viaSegments = 24 } = params
+  const {
+    bounds,
+    vias,
+    clearance,
+    rects,
+    polygons = [],
+    viaSegments = 24,
+  } = params
   const points: Point[] = []
   const { minX: x0, maxX: x1, minY: y0, maxY: y1 } = bounds
 

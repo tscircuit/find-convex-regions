@@ -11,7 +11,11 @@ export const resolveConstraintCrossings = (
   pts: Point[],
   constraintEdges: [number, number][],
   ringBoundaries: number[],
-): { pts: Point[]; constraintEdges: [number, number][]; hadCrossings: boolean } => {
+): {
+  pts: Point[]
+  constraintEdges: [number, number][]
+  hadCrossings: boolean
+} => {
   // Determine which ring each edge belongs to
   const edgeRing: number[] = new Array(constraintEdges.length)
   for (let ei = 0; ei < constraintEdges.length; ei++) {
