@@ -1,6 +1,7 @@
 import { BaseSolver } from "@tscircuit/solver-utils"
 import type { GraphicsObject } from "graphics-debug"
 import { generateBoundaryPoints } from "./generateBoundaryPoints"
+import { generateBoundaryPointsWithEdges } from "./generateBoundaryPointsWithEdges"
 import type {
   ConvexRegionsComputeInput,
   GeneratePointsStageOutput,
@@ -20,14 +21,31 @@ export class GeneratePointsSolver extends BaseSolver {
     const rects = this.input.rects ?? []
     const polygons = this.input.polygons ?? []
 
-    this.output = {
-      pts: generateBoundaryPoints({
+    if (this.input.useConstrainedDelaunay) {
+      const result = generateBoundaryPointsWithEdges({
         bounds: this.input.bounds,
         vias,
         clearance: this.input.clearance,
         rects,
         polygons,
-      }),
+        viaSegments: this.input.viaSegments,
+      })
+      this.output = {
+        pts: result.pts,
+        constraintEdges: result.constraintEdges,
+        hadCrossings: result.hadCrossings,
+      }
+    } else {
+      this.output = {
+        pts: generateBoundaryPoints({
+          bounds: this.input.bounds,
+          vias,
+          clearance: this.input.clearance,
+          rects,
+          polygons,
+          viaSegments: this.input.viaSegments,
+        }),
+      }
     }
     this.stats = { points: this.output.pts.length }
     this.solved = true

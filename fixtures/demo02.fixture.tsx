@@ -20,6 +20,8 @@ export default function App() {
   const [showRegions, setShowRegions] = useState(true)
   const [showHull, setShowHull] = useState(false)
   const [showPorts, setShowPorts] = useState(true)
+  const [useCDT, setUseCDT] = useState(false)
+  const [viaSegments, setViaSegments] = useState<number | undefined>(undefined)
   const [dragIdx, setDragIdx] = useState(null)
   const [hoverRegion, setHoverRegion] = useState(null)
   const svgRef = useRef(null)
@@ -30,6 +32,8 @@ export default function App() {
       vias,
       clearance: cl,
       concavityTolerance: concavityTol,
+      useConstrainedDelaunay: useCDT,
+      viaSegments,
     })
     solver.solve()
     return (
@@ -41,7 +45,7 @@ export default function App() {
         depths: [],
       }
     )
-  }, [bounds, vias, cl, concavityTol])
+  }, [bounds, vias, cl, concavityTol, useCDT, viaSegments])
 
   const getSvgPt = useCallback((e) => {
     const svg = svgRef.current
@@ -101,7 +105,7 @@ export default function App() {
   )
 
   const ports = useMemo(
-    () => computeRegionPorts(regions, bounds, vias, cl),
+    () => computeRegionPorts({ regions, bounds, vias, clearance: cl }),
     [regions, bounds, vias, cl],
   )
 
@@ -231,7 +235,7 @@ export default function App() {
                 key={`t${i}`}
                 points={`${pts[a].x},${pts[a].y} ${pts[b].x},${pts[b].y} ${pts[c].x},${pts[c].y}`}
                 fill="none"
-                stroke="rgba(255,255,255,0.15)"
+                stroke="rgba(100,116,139,0.35)"
                 strokeWidth={0.5}
               />
             ))}
@@ -408,6 +412,72 @@ export default function App() {
                 letterSpacing: 1,
               }}
             >
+              Triangulation
+            </div>
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                fontSize: 13,
+                cursor: "pointer",
+                marginBottom: 8,
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={useCDT}
+                onChange={(e) => setUseCDT(e.target.checked)}
+              />
+              Constrained Delaunay (CDT)
+            </label>
+            <div
+              style={{
+                fontSize: 11,
+                color: "#999",
+                marginBottom: 4,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+              }}
+            >
+              Via segments:{" "}
+              <span style={{ color: "#38b6ff" }}>
+                {viaSegments ?? (useCDT ? 8 : 24)}
+              </span>
+              {viaSegments === undefined && (
+                <span style={{ color: "#666" }}> (default)</span>
+              )}
+            </div>
+            <input
+              type="range"
+              min={4}
+              max={32}
+              step={2}
+              value={viaSegments ?? (useCDT ? 8 : 24)}
+              onChange={(e) => {
+                const v = +e.target.value
+                const defaultVal = useCDT ? 8 : 24
+                setViaSegments(v === defaultVal ? undefined : v)
+              }}
+              style={{ width: "100%" }}
+            />
+            <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>
+              {useCDT
+                ? "CDT enforces obstacle boundaries as edges. filterTris is skipped."
+                : "Unconstrained Bowyer-Watson. filterTris removes obstacle-crossing triangles."}
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                fontSize: 11,
+                color: "#999",
+                marginBottom: 6,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+              }}
+            >
               Actions
             </div>
             {[
@@ -465,6 +535,10 @@ export default function App() {
             <div style={{ fontSize: 13, lineHeight: 1.8 }}>
               <div>
                 Vias: <span style={{ color: "#ff6b6b" }}>{vias.length}</span>
+              </div>
+              <div>
+                Points:{" "}
+                <span style={{ color: "#aaa" }}>{pts.length}</span>
               </div>
               <div>
                 Triangles:{" "}

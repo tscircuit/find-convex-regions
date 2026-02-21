@@ -1,5 +1,6 @@
 import { BaseSolver } from "@tscircuit/solver-utils"
 import type { GraphicsObject } from "graphics-debug"
+import { constrainedDelaunay } from "./constrainedDelaunay"
 import { delaunay } from "./delaunay"
 import { filterTris } from "./filterTris"
 import type { TriangulateStageInput, TriangulateStageOutput } from "./types"
@@ -17,16 +18,39 @@ export class TriangulateSolver extends BaseSolver {
     const vias = this.input.vias ?? []
     const rects = this.input.rects ?? []
     const polygons = this.input.polygons ?? []
-    const allTriangles = delaunay(this.input.pts)
-    const validTris = filterTris({
-      triangles: allTriangles,
-      pts: this.input.pts,
-      bounds: this.input.bounds,
-      vias,
-      clearance: this.input.clearance,
-      rects,
-      polygons,
-    })
+
+    let validTris: import("./types").Triangle[]
+
+    if (this.input.useConstrainedDelaunay && this.input.constraintEdges) {
+      const cdtTris = constrainedDelaunay(
+        this.input.pts,
+        this.input.constraintEdges,
+      )
+      // When obstacle boundaries overlap, CDT can create triangles inside
+      // the overlap zone — filterTris is needed to clean them up
+      validTris = this.input.hadCrossings
+        ? filterTris({
+            triangles: cdtTris,
+            pts: this.input.pts,
+            bounds: this.input.bounds,
+            vias,
+            clearance: this.input.clearance,
+            rects,
+            polygons,
+          })
+        : cdtTris
+    } else {
+      const allTriangles = delaunay(this.input.pts)
+      validTris = filterTris({
+        triangles: allTriangles,
+        pts: this.input.pts,
+        bounds: this.input.bounds,
+        vias,
+        clearance: this.input.clearance,
+        rects,
+        polygons,
+      })
+    }
 
     this.output = {
       pts: this.input.pts,
@@ -34,7 +58,6 @@ export class TriangulateSolver extends BaseSolver {
     }
 
     this.stats = {
-      candidateTriangles: allTriangles.length,
       validTriangles: validTris.length,
     }
     this.solved = true

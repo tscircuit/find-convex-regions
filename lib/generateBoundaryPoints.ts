@@ -8,8 +8,9 @@ export const generateBoundaryPoints = (params: {
   clearance: number
   rects: Rect[]
   polygons?: Polygon[]
+  viaSegments?: number
 }): Point[] => {
-  const { bounds, vias, clearance, rects, polygons = [] } = params
+  const { bounds, vias, clearance, rects, polygons = [], viaSegments = 24 } = params
   const points: Point[] = []
   const { minX: x0, maxX: x1, minY: y0, maxY: y1 } = bounds
 
@@ -29,7 +30,6 @@ export const generateBoundaryPoints = (params: {
     points.push({ x: x0, y: y1 - t * (y1 - y0) })
   }
 
-  const viaSegments = 24
   for (const via of vias) {
     const radius = via.diameter / 2 + clearance
     for (let i = 0; i < viaSegments; i++) {

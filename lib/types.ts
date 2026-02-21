@@ -35,6 +35,8 @@ export type ConvexRegionsComputeInput = {
   polygons?: Polygon[]
   clearance: number
   concavityTolerance: number
+  useConstrainedDelaunay?: boolean
+  viaSegments?: number
 }
 
 export type ConvexRegionsComputeResult = {
@@ -53,6 +55,8 @@ export type RegionPort = {
 
 export type GeneratePointsStageOutput = {
   pts: Point[]
+  constraintEdges?: [number, number][]
+  hadCrossings?: boolean
 }
 
 export type TriangulateStageInput = GeneratePointsStageOutput & {
@@ -61,6 +65,9 @@ export type TriangulateStageInput = GeneratePointsStageOutput & {
   rects?: Rect[]
   polygons?: Polygon[]
   clearance: number
+  useConstrainedDelaunay?: boolean
+  constraintEdges?: [number, number][]
+  hadCrossings?: boolean
 }
 
 export type TriangulateStageOutput = GeneratePointsStageOutput & {

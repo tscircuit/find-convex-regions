@@ -595,7 +595,7 @@ export default function App() {
                 key={`t${i}`}
                 points={`${pts[a].x},${pts[a].y} ${pts[b].x},${pts[b].y} ${pts[c].x},${pts[c].y}`}
                 fill="none"
-                stroke="rgba(255,255,255,0.15)"
+                stroke="rgba(100,116,139,0.35)"
                 strokeWidth={0.5}
               />
             ))}
