@@ -16,8 +16,9 @@ import type { Point, Polygon } from "./types"
 export const getOffsetPolygonPoints = (params: {
   polygon: Polygon
   clearance: number
+  verticesOnly?: boolean
 }): Point[] => {
-  const { polygon, clearance } = params
+  const { polygon, clearance, verticesOnly = false } = params
   const pts = polygon.points
   const n = pts.length
   if (n < 3) return []
@@ -78,6 +79,10 @@ export const getOffsetPolygonPoints = (params: {
       // Parallel edges - just use a point on the current offset line
       offsetVertices.push({ x: currLine.pt.x, y: currLine.pt.y })
     }
+  }
+
+  if (verticesOnly) {
+    return offsetVertices
   }
 
   // Sample points along each offset edge
