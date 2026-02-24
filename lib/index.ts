@@ -23,10 +23,12 @@ export { ptSegDist } from "./ptSegDist"
 export { regionPath } from "./regionPath"
 export { rotatePoint } from "./rotatePoint"
 export { stitchRings } from "./stitchRings"
+export { splitRegionsOnChokePoints } from "./splitRegionsOnChokePoints"
 export { TriangulateSolver } from "./TriangulateSolver"
 
 export type {
   Bounds,
+  ChokePointPreventionConfig,
   ConvexRegionsComputeInput,
   ConvexRegionsComputeResult,
   GeneratePointsStageOutput,

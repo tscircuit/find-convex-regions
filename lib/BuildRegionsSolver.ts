@@ -1,6 +1,7 @@
 import { BaseSolver } from "@tscircuit/solver-utils"
 import type { GraphicsObject } from "graphics-debug"
 import { buildRegionsFromCells } from "./buildRegionsFromCells"
+import { splitRegionsOnChokePoints } from "./splitRegionsOnChokePoints"
 import type { ConvexRegionsComputeResult, MergeCellsStageOutput } from "./types"
 
 export class BuildRegionsSolver extends BaseSolver {
@@ -13,15 +14,21 @@ export class BuildRegionsSolver extends BaseSolver {
   }
 
   override _step(): void {
-    const { regions, hulls } = buildRegionsFromCells(this.input)
+    const { regions } = buildRegionsFromCells(this.input)
+    const split = splitRegionsOnChokePoints({
+      regions,
+      depths: this.input.depths,
+      config: this.input.chokePointPrevention,
+    })
+
     this.output = {
       pts: this.input.pts,
       validTris: this.input.validTris,
-      regions,
-      hulls,
-      depths: this.input.depths,
+      regions: split.regions,
+      hulls: split.hulls,
+      depths: split.depths,
     }
-    this.stats = { regions: regions.length }
+    this.stats = { regions: split.regions.length }
     this.solved = true
   }
 

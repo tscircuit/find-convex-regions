@@ -24,6 +24,7 @@ export class MergeCellsSolver extends BaseSolver {
       validTris: this.input.validTris,
       cells: merged.cells,
       depths: merged.depths,
+      chokePointPrevention: this.input.chokePointPrevention,
     }
 
     this.stats = {

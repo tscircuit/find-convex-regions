@@ -3,8 +3,8 @@ import { delaunay } from "./delaunay"
 import { filterTris } from "./filterTris"
 import { generateBoundaryPoints } from "./generateBoundaryPoints"
 import { generateBoundaryPointsWithEdges } from "./generateBoundaryPointsWithEdges"
-import { hullIdx } from "./hullIdx"
 import { mergeCells } from "./mergeCells"
+import { splitRegionsOnChokePoints } from "./splitRegionsOnChokePoints"
 import type {
   ConvexRegionsComputeInput,
   ConvexRegionsComputeResult,
@@ -77,17 +77,17 @@ export const computeConvexRegions = (
   const regions = cells.map((cell) =>
     cell.map((i) => pts[i]).filter(isDefinedPoint),
   )
-  const hulls = cells.map((cell) =>
-    hullIdx(cell, pts)
-      .map((i) => pts[i])
-      .filter(isDefinedPoint),
-  )
+  const split = splitRegionsOnChokePoints({
+    regions,
+    depths,
+    config: input.chokePointPrevention,
+  })
 
   return {
     pts,
     validTris,
-    regions,
-    hulls,
-    depths,
+    regions: split.regions,
+    hulls: split.hulls,
+    depths: split.depths,
   }
 }
