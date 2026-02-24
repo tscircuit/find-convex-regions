@@ -37,6 +37,14 @@ export type ConvexRegionsComputeInput = {
   concavityTolerance: number
   useConstrainedDelaunay?: boolean
   viaSegments?: number
+  chokePointPrevention?: ChokePointPreventionConfig
+}
+
+export type ChokePointPreventionConfig = {
+  enabled: boolean
+  maxNarrowWidthRatio: number
+  minLobeAreaRatio: number
+  maxRecursiveSplits?: number
 }
 
 export type ConvexRegionsComputeResult = {
@@ -74,9 +82,11 @@ export type TriangulateStageOutput = GeneratePointsStageOutput & {
 
 export type MergeCellsStageInput = TriangulateStageOutput & {
   concavityTolerance: number
+  chokePointPrevention?: ChokePointPreventionConfig
 }
 
 export type MergeCellsStageOutput = TriangulateStageOutput & {
   cells: number[][]
   depths: number[]
+  chokePointPrevention?: ChokePointPreventionConfig
 }
