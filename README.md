@@ -159,8 +159,9 @@ type Bounds  = { minX: number; maxX: number; minY: number; maxY: number }
 | `rects` | Rotated rectangular obstacles. Supports arbitrary `ccwRotation`. |
 | `polygons` | Arbitrary closed polygon obstacles (3+ vertices). |
 | `clearance` | Buffer distance added around every obstacle boundary. |
-| `concavityTolerance` | `0` for strictly convex regions. Higher values allow shallow concavity when merging adjacent cells, producing fewer, larger regions. |
+| `concavityTolerance` | `0` for strictly convex regions. Higher values allow shallow concavity when merging adjacent cells, producing fewer, larger regions. Ignored when `usePolyanyaMerge` is `true`. |
 | `useConstrainedDelaunay` | Use CDT instead of unconstrained Bowyer-Watson. Prevents edge crossings through obstacles. Uses minimal sampling (corner-only rects, octagon vias). Default `true`. Set to `false` to use the legacy unconstrained approach. |
+| `usePolyanyaMerge` | Use Polyanya-style two-phase merge (dead-end elimination + max-area priority queue) instead of greedy concavity-bounded merge. Produces strictly convex regions, 3-10x faster at scale. Default `false`. |
 | `viaSegments` | Number of points per via boundary ring. Default `8` with CDT, `24` without. |
 
 ## Output
@@ -194,9 +195,9 @@ In CDT mode, points are generated in perimeter-walk order per obstacle, and cons
 
 ### 2. Triangulation
 
-**Unconstrained mode** (default): Run Bowyer-Watson incremental Delaunay triangulation on the point set, then filter out any triangle whose centroid (or edge midpoints, for polygon obstacles) falls inside an obstacle or outside the bounds.
+**Unconstrained mode** (`useConstrainedDelaunay: false`): Run Bowyer-Watson incremental Delaunay triangulation on the point set, then filter out any triangle whose centroid (or edge midpoints, for polygon obstacles) falls inside an obstacle or outside the bounds.
 
-**CDT mode** (`useConstrainedDelaunay: true`): Run constrained Delaunay triangulation via `cdt2d`, which forces obstacle boundary edges into the triangulation mesh. With `exterior: false`, triangles inside obstacles and outside bounds are excluded structurally. When obstacle boundaries overlap, `filterTris` runs to remove triangles in the overlap zone; otherwise it is skipped.
+**CDT mode (default)** (`useConstrainedDelaunay: true`): Run constrained Delaunay triangulation via `cdt2d`, which forces obstacle boundary edges into the triangulation mesh. With `exterior: false`, triangles inside obstacles and outside bounds are excluded structurally. When obstacle boundaries overlap, `filterTris` runs to remove triangles in the overlap zone; otherwise it is skipped.
 
 Both modes produce a triangle mesh covering only the free space.
 
@@ -237,6 +238,7 @@ The library also exports these lower-level functions:
 | `constrainedDelaunay(pts, edges)` | Constrained Delaunay triangulation via `cdt2d`. |
 | `filterTris(...)` | Remove triangles that overlap obstacles or lie outside bounds. |
 | `mergeCells(...)` | Greedy concavity-bounded cell merging. |
+| `mergeCellsPolyanya(...)` | Polyanya-style two-phase merge (dead-end elimination + max-area priority queue). |
 | `stitchRings(a, b)` | Merge two adjacent cell boundary rings by removing shared edges. |
 | `concavityDepth(ring, pts)` | Max distance from any ring vertex to its convex hull boundary. |
 | `hullIdx(indices, pts)` | Andrew's monotone chain convex hull (returns indices). |

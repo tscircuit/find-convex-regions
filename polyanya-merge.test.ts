@@ -51,28 +51,39 @@ test("Polyanya merge: significantly reduces triangle count (horizontal wall)", (
   const input = createThinHorizontalWallInput(true)
   const { baseline, polyanya } = run(input)
 
-  // Polyanya produces strictly convex regions — may differ from greedy concavity merge
-  // but should significantly reduce triangle count
-  expect(polyanya.regions.length).toBeLessThan(polyanya.regions.length + baseline.validTris.length)
+  // Polyanya produces strictly convex regions — should merge many triangles
+  expect(polyanya.regions.length).toBeLessThanOrEqual(baseline.regions.length)
   expect(polyanya.regions.length).toBeGreaterThanOrEqual(1)
   // Should reduce to at most half the triangle count
-  expect(polyanya.regions.length).toBeLessThanOrEqual(baseline.validTris.length / 2)
+  expect(polyanya.regions.length).toBeLessThanOrEqual(
+    baseline.validTris.length / 2,
+  )
 })
 
 test("Polyanya merge: significantly reduces triangle count (staggered jumpers)", () => {
-  const input = { ...createStaggeredJumpersInput(), useConstrainedDelaunay: true }
+  const input = {
+    ...createStaggeredJumpersInput(),
+    useConstrainedDelaunay: true,
+  }
   const { baseline, polyanya } = run(input)
 
   expect(polyanya.regions.length).toBeGreaterThanOrEqual(1)
-  expect(polyanya.regions.length).toBeLessThanOrEqual(baseline.validTris.length / 2)
+  expect(polyanya.regions.length).toBeLessThanOrEqual(
+    baseline.validTris.length / 2,
+  )
 })
 
 test("Polyanya merge: significantly reduces triangle count (polygon obstacles)", () => {
-  const input = { ...createPolygonObstaclesInput(), useConstrainedDelaunay: true }
+  const input = {
+    ...createPolygonObstaclesInput(),
+    useConstrainedDelaunay: true,
+  }
   const { baseline, polyanya } = run(input)
 
   expect(polyanya.regions.length).toBeGreaterThanOrEqual(1)
-  expect(polyanya.regions.length).toBeLessThanOrEqual(baseline.validTris.length / 2)
+  expect(polyanya.regions.length).toBeLessThanOrEqual(
+    baseline.validTris.length / 2,
+  )
 })
 
 test("Polyanya merge: all regions are strictly convex", () => {
@@ -106,12 +117,17 @@ test("Polyanya merge: preserves total area", () => {
 
     expect(baselineArea).toBeGreaterThan(0)
     // Both methods should cover the same free-space area (same triangles, different merging)
-    expect(Math.abs(polyanyaArea - baselineArea) / baselineArea).toBeLessThan(1e-6)
+    expect(Math.abs(polyanyaArea - baselineArea) / baselineArea).toBeLessThan(
+      1e-6,
+    )
   }
 })
 
 test("Polyanya merge: depths are all zero (strictly convex)", () => {
-  const input = { ...createStaggeredJumpersInput(), useConstrainedDelaunay: true }
+  const input = {
+    ...createStaggeredJumpersInput(),
+    useConstrainedDelaunay: true,
+  }
   const result = computeConvexRegions({ ...input, usePolyanyaMerge: true })
 
   for (const d of result.depths) {
