@@ -5,6 +5,7 @@ import { generateBoundaryPoints } from "./generateBoundaryPoints"
 import { generateBoundaryPointsWithEdges } from "./generateBoundaryPointsWithEdges"
 import { hullIdx } from "./hullIdx"
 import { mergeCells } from "./mergeCells"
+import { mergeCellsPolyanya } from "./mergeCellsPolyanya"
 import type {
   ConvexRegionsComputeInput,
   ConvexRegionsComputeResult,
@@ -68,11 +69,9 @@ export const computeConvexRegions = (
       polygons,
     })
   }
-  const { cells, depths } = mergeCells({
-    triangles: validTris,
-    pts,
-    concavityTolerance,
-  })
+  const { cells, depths } = input.usePolyanyaMerge
+    ? mergeCellsPolyanya({ triangles: validTris, pts })
+    : mergeCells({ triangles: validTris, pts, concavityTolerance })
 
   const regions = cells.map((cell) =>
     cell.map((i) => pts[i]).filter(isDefinedPoint),
