@@ -13,6 +13,7 @@ const bounds = { minX: 0, maxX: W, minY: 0, maxY: H }
 export default function StaggeredViasFixture() {
   const [cl, setCl] = useState(8)
   const [useCDT, setUseCDT] = useState(true)
+  const [usePolyanyaMerge, setUsePolyanyaMerge] = useState(false)
   const [viaSegments, setViaSegments] = useState(undefined)
   const [concavityTol, setConcavityTol] = useState(0)
   const [showTris, setShowTris] = useState(false)
@@ -27,6 +28,7 @@ export default function StaggeredViasFixture() {
       clearance: cl,
       concavityTolerance: concavityTol,
       useConstrainedDelaunay: useCDT,
+      usePolyanyaMerge,
       viaSegments,
     })
     solver.solve()
@@ -39,7 +41,7 @@ export default function StaggeredViasFixture() {
         depths: [],
       }
     )
-  }, [vias, cl, concavityTol, useCDT, viaSegments])
+  }, [vias, cl, concavityTol, useCDT, usePolyanyaMerge, viaSegments])
 
   return (
     <div
@@ -245,6 +247,23 @@ export default function StaggeredViasFixture() {
               onChange={(e) => setUseCDT(e.target.checked)}
             />
             Constrained Delaunay (CDT)
+          </label>
+          <label
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              fontSize: 13,
+              cursor: "pointer",
+              marginBottom: 8,
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={usePolyanyaMerge}
+              onChange={(e) => setUsePolyanyaMerge(e.target.checked)}
+            />
+            Polyanya merge (strictly convex)
           </label>
           <div
             style={{

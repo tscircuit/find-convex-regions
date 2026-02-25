@@ -29,6 +29,7 @@ const polyPoints = (points: Point[]): string =>
 export default function StaggeredRectsFixture() {
   const [cl, setCl] = useState(8)
   const [useCDT, setUseCDT] = useState(true)
+  const [usePolyanyaMerge, setUsePolyanyaMerge] = useState(false)
   const [concavityTol, setConcavityTol] = useState(0)
   const [showTris, setShowTris] = useState(false)
   const [showRegions, setShowRegions] = useState(true)
@@ -42,6 +43,7 @@ export default function StaggeredRectsFixture() {
       clearance: cl,
       concavityTolerance: concavityTol,
       useConstrainedDelaunay: useCDT,
+      usePolyanyaMerge,
     })
     solver.solve()
     return (
@@ -53,7 +55,7 @@ export default function StaggeredRectsFixture() {
         depths: [],
       }
     )
-  }, [rects, cl, concavityTol, useCDT])
+  }, [rects, cl, concavityTol, useCDT, usePolyanyaMerge])
 
   return (
     <div
@@ -259,6 +261,23 @@ export default function StaggeredRectsFixture() {
               onChange={(e) => setUseCDT(e.target.checked)}
             />
             Constrained Delaunay (CDT)
+          </label>
+          <label
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              fontSize: 13,
+              cursor: "pointer",
+              marginBottom: 8,
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={usePolyanyaMerge}
+              onChange={(e) => setUsePolyanyaMerge(e.target.checked)}
+            />
+            Polyanya merge (strictly convex)
           </label>
           <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>
             {useCDT
