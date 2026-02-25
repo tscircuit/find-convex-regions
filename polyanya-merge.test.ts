@@ -40,7 +40,7 @@ function allConvex(regions: Point[][]): boolean {
 }
 
 function run(input: ConvexRegionsComputeInput) {
-  const baseline = computeConvexRegions(input)
+  const baseline = computeConvexRegions({ ...input, usePolyanyaMerge: false })
   const polyanya = computeConvexRegions({ ...input, usePolyanyaMerge: true })
   return { baseline, polyanya }
 }

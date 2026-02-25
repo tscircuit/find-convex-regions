@@ -76,7 +76,7 @@ export default function StaggeredRectsFixture() {
   const [cols, setCols] = useState(12)
   const [cl, setCl] = useState(4)
   const [useCDT, setUseCDT] = useState(true)
-  const [usePolyanyaMerge, setUsePolyanyaMerge] = useState(false)
+  const [usePolyanyaMerge, setUsePolyanyaMerge] = useState(true)
   const [concavityTol, setConcavityTol] = useState(0)
   const [showTris, setShowTris] = useState(false)
   const [showRegions, setShowRegions] = useState(true)

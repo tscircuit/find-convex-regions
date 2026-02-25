@@ -161,7 +161,7 @@ type Bounds  = { minX: number; maxX: number; minY: number; maxY: number }
 | `clearance` | Buffer distance added around every obstacle boundary. |
 | `concavityTolerance` | `0` for strictly convex regions. Higher values allow shallow concavity when merging adjacent cells, producing fewer, larger regions. Ignored when `usePolyanyaMerge` is `true`. |
 | `useConstrainedDelaunay` | Use CDT instead of unconstrained Bowyer-Watson. Prevents edge crossings through obstacles. Uses minimal sampling (corner-only rects, octagon vias). Default `true`. Set to `false` to use the legacy unconstrained approach. |
-| `usePolyanyaMerge` | Use Polyanya-style two-phase merge (dead-end elimination + max-area priority queue) instead of greedy concavity-bounded merge. Produces strictly convex regions, 3-10x faster at scale. Default `false`. |
+| `usePolyanyaMerge` | Use Polyanya-style two-phase merge (dead-end elimination + max-area priority queue) instead of greedy concavity-bounded merge. Produces strictly convex regions, 3-10x faster at scale. Default `true`. Set to `false` to use the legacy greedy merge. |
 | `viaSegments` | Number of points per via boundary ring. Default `8` with CDT, `24` without. |
 
 ## Output

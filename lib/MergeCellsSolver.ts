@@ -14,16 +14,17 @@ export class MergeCellsSolver extends BaseSolver {
   }
 
   override _step(): void {
-    const merged = this.input.usePolyanyaMerge
-      ? mergeCellsPolyanya({
-          triangles: this.input.validTris,
-          pts: this.input.pts,
-        })
-      : mergeCells({
-          triangles: this.input.validTris,
-          pts: this.input.pts,
-          concavityTolerance: this.input.concavityTolerance,
-        })
+    const merged =
+      this.input.usePolyanyaMerge !== false
+        ? mergeCellsPolyanya({
+            triangles: this.input.validTris,
+            pts: this.input.pts,
+          })
+        : mergeCells({
+            triangles: this.input.validTris,
+            pts: this.input.pts,
+            concavityTolerance: this.input.concavityTolerance,
+          })
 
     this.output = {
       pts: this.input.pts,

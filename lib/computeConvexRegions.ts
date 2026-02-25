@@ -69,9 +69,10 @@ export const computeConvexRegions = (
       polygons,
     })
   }
-  const { cells, depths } = input.usePolyanyaMerge
-    ? mergeCellsPolyanya({ triangles: validTris, pts })
-    : mergeCells({ triangles: validTris, pts, concavityTolerance })
+  const { cells, depths } =
+    input.usePolyanyaMerge !== false
+      ? mergeCellsPolyanya({ triangles: validTris, pts })
+      : mergeCells({ triangles: validTris, pts, concavityTolerance })
 
   const regions = cells.map((cell) =>
     cell.map((i) => pts[i]).filter(isDefinedPoint),

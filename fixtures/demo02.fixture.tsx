@@ -21,7 +21,7 @@ export default function App() {
   const [showHull, setShowHull] = useState(false)
   const [showPorts, setShowPorts] = useState(true)
   const [useCDT, setUseCDT] = useState(true)
-  const [usePolyanyaMerge, setUsePolyanyaMerge] = useState(false)
+  const [usePolyanyaMerge, setUsePolyanyaMerge] = useState(true)
   const [viaSegments, setViaSegments] = useState<number | undefined>(undefined)
   const [dragIdx, setDragIdx] = useState(null)
   const [hoverRegion, setHoverRegion] = useState(null)
