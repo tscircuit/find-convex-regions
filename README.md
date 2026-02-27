@@ -248,6 +248,8 @@ The library also exports these lower-level functions:
 | `computeRegionPorts(...)` | Generate entry/exit port points along region boundaries. |
 | `generateBoundaryPoints(...)` | Sample points around all obstacle boundaries. |
 | `generateBoundaryPointsWithEdges(...)` | Same as above, but returns constraint edges alongside points (for CDT). |
+| `unionObstacleBoundaries(rings)` | Union overlapping obstacle boundary rings into non-overlapping polygons (via `@flatten-js/core`). |
+| `resolveConstraintCrossings(...)` | Detect and split crossing constraint edges by inserting intersection points. |
 | `cross({ o, a, b })` | 2D cross product (orientation test). |
 | `circumcircle({ a, b, c })` | Circumscribed circle of a triangle. |
 | `dist2(a, b)` | Squared distance between two points. |
