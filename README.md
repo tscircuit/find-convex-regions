@@ -99,7 +99,7 @@ const solver = new ConvexRegionsSolver({
 })
 ```
 
-CDT mode uses minimal sampling — octagon vias (8 points vs 24), corner-only rects (4 points vs ~20), and vertex-only polygon offsets. Constraint edges enforce the boundaries structurally, so intermediate edge samples are redundant. When obstacle boundaries don't overlap, `filterTris` is skipped entirely. When boundaries do overlap (e.g., closely-spaced obstacles with large clearance), crossing constraint edges are automatically resolved and `filterTris` runs to clean up the overlap zone.
+CDT mode uses minimal sampling — octagon vias (8 points vs 24), corner-only rects (4 points vs ~20), and vertex-only polygon offsets. Constraint edges enforce the boundaries structurally, so intermediate edge samples are redundant. When obstacles are present, overlapping boundaries are automatically unioned (via `@flatten-js/core`) before constraint edges are generated, and `filterTris` runs to remove any invalid triangles. Crossing constraint edges are resolved as a safety net for any remaining overlaps.
 
 The `viaSegments` option controls how many points approximate each circular via boundary. It defaults to **8** (octagon) in CDT mode and **24** in unconstrained mode. Override with any value:
 
@@ -197,7 +197,7 @@ In CDT mode, points are generated in perimeter-walk order per obstacle, and cons
 
 **Unconstrained mode** (`useConstrainedDelaunay: false`): Run Bowyer-Watson incremental Delaunay triangulation on the point set, then filter out any triangle whose centroid (or edge midpoints, for polygon obstacles) falls inside an obstacle or outside the bounds.
 
-**CDT mode (default)** (`useConstrainedDelaunay: true`): Run constrained Delaunay triangulation via `cdt2d`, which forces obstacle boundary edges into the triangulation mesh. With `exterior: false`, triangles inside obstacles and outside bounds are excluded structurally. When obstacle boundaries overlap, `filterTris` runs to remove triangles in the overlap zone; otherwise it is skipped.
+**CDT mode (default)** (`useConstrainedDelaunay: true`): Run constrained Delaunay triangulation via `cdt2d`, which forces obstacle boundary edges into the triangulation mesh. With `exterior: false`, triangles outside bounds are excluded structurally. When obstacles are present, `filterTris` runs to remove any triangles inside obstacle boundaries (necessary even without edge crossings, e.g., when one obstacle is fully contained inside another).
 
 Both modes produce a triangle mesh covering only the free space.
 

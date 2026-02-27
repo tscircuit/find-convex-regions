@@ -8,7 +8,10 @@ function octagon(cx: number, cy: number, radius: number): Point[] {
   const pts: Point[] = []
   for (let i = 0; i < 8; i++) {
     const angle = (2 * Math.PI * i) / 8
-    pts.push({ x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) })
+    pts.push({
+      x: cx + radius * Math.cos(angle),
+      y: cy + radius * Math.sin(angle),
+    })
   }
   return pts
 }
@@ -46,7 +49,10 @@ describe("unionObstacleBoundaries", () => {
     // Should merge into a single polygon (may have one face)
     expect(result.length).toBeLessThanOrEqual(2) // 1 outer, possibly 0 holes
     // Merged area should be larger than either individual
-    const totalArea = result.reduce((sum, r) => sum + Math.abs(signedArea(r)), 0)
+    const totalArea = result.reduce(
+      (sum, r) => sum + Math.abs(signedArea(r)),
+      0,
+    )
     const areaA = Math.abs(signedArea(a))
     expect(totalArea).toBeGreaterThan(areaA)
   })
@@ -57,7 +63,10 @@ describe("unionObstacleBoundaries", () => {
     const result = unionObstacleBoundaries([outer, inner])
     // The inner is fully contained — union should yield the outer polygon
     // (flatten-js may produce the outer ring only)
-    const totalArea = result.reduce((sum, r) => sum + Math.abs(signedArea(r)), 0)
+    const totalArea = result.reduce(
+      (sum, r) => sum + Math.abs(signedArea(r)),
+      0,
+    )
     const outerArea = Math.abs(signedArea(outer))
     // Total should be approximately equal to the outer area
     expect(totalArea).toBeCloseTo(outerArea, 0)

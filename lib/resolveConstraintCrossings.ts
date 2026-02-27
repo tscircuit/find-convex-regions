@@ -6,6 +6,10 @@ import type { Point } from "./types"
  *
  * Only checks edges from different rings — edges within the same ring
  * are sequential and never cross.
+ *
+ * Note: The O(E²) pairwise check is acceptable because unionObstacleBoundaries
+ * merges overlapping obstacles before this runs, so crossings are rare in practice.
+ * This function serves as a safety net for any residual edge overlaps.
  */
 export const resolveConstraintCrossings = (
   pts: Point[],
