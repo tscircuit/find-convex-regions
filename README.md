@@ -99,7 +99,7 @@ const solver = new ConvexRegionsSolver({
 })
 ```
 
-CDT mode uses minimal sampling — octagon vias (8 points vs 24), corner-only rects (4 points vs ~20), and vertex-only polygon offsets. Constraint edges enforce the boundaries structurally, so intermediate edge samples are redundant. When obstacle boundaries don't overlap, `filterTris` is skipped entirely. When boundaries do overlap (e.g., closely-spaced obstacles with large clearance), crossing constraint edges are automatically resolved and `filterTris` runs to clean up the overlap zone.
+CDT mode uses minimal sampling — octagon vias (8 points vs 24), corner-only rects (4 points vs ~20), and vertex-only polygon offsets. Constraint edges enforce the boundaries structurally, so intermediate edge samples are redundant. When obstacles are present, overlapping boundaries are automatically unioned (via `@flatten-js/core`) before constraint edges are generated, and `filterTris` runs to remove any invalid triangles. Crossing constraint edges are resolved as a safety net for any remaining overlaps.
 
 The `viaSegments` option controls how many points approximate each circular via boundary. It defaults to **8** (octagon) in CDT mode and **24** in unconstrained mode. Override with any value:
 
@@ -159,8 +159,9 @@ type Bounds  = { minX: number; maxX: number; minY: number; maxY: number }
 | `rects` | Rotated rectangular obstacles. Supports arbitrary `ccwRotation`. |
 | `polygons` | Arbitrary closed polygon obstacles (3+ vertices). |
 | `clearance` | Buffer distance added around every obstacle boundary. |
-| `concavityTolerance` | `0` for strictly convex regions. Higher values allow shallow concavity when merging adjacent cells, producing fewer, larger regions. |
+| `concavityTolerance` | `0` for strictly convex regions. Higher values allow shallow concavity when merging adjacent cells, producing fewer, larger regions. Ignored when `usePolyanyaMerge` is `true`. |
 | `useConstrainedDelaunay` | Use CDT instead of unconstrained Bowyer-Watson. Prevents edge crossings through obstacles. Uses minimal sampling (corner-only rects, octagon vias). Default `true`. Set to `false` to use the legacy unconstrained approach. |
+| `usePolyanyaMerge` | Use Polyanya-style two-phase merge (dead-end elimination + max-area priority queue) instead of greedy concavity-bounded merge. Produces strictly convex regions, 3-10x faster at scale. Default `true`. Set to `false` to use the legacy greedy merge. |
 | `viaSegments` | Number of points per via boundary ring. Default `8` with CDT, `24` without. |
 
 ## Output
@@ -194,9 +195,9 @@ In CDT mode, points are generated in perimeter-walk order per obstacle, and cons
 
 ### 2. Triangulation
 
-**Unconstrained mode** (default): Run Bowyer-Watson incremental Delaunay triangulation on the point set, then filter out any triangle whose centroid (or edge midpoints, for polygon obstacles) falls inside an obstacle or outside the bounds.
+**Unconstrained mode** (`useConstrainedDelaunay: false`): Run Bowyer-Watson incremental Delaunay triangulation on the point set, then filter out any triangle whose centroid (or edge midpoints, for polygon obstacles) falls inside an obstacle or outside the bounds.
 
-**CDT mode** (`useConstrainedDelaunay: true`): Run constrained Delaunay triangulation via `cdt2d`, which forces obstacle boundary edges into the triangulation mesh. With `exterior: false`, triangles inside obstacles and outside bounds are excluded structurally. When obstacle boundaries overlap, `filterTris` runs to remove triangles in the overlap zone; otherwise it is skipped.
+**CDT mode (default)** (`useConstrainedDelaunay: true`): Run constrained Delaunay triangulation via `cdt2d`, which forces obstacle boundary edges into the triangulation mesh. With `exterior: false`, triangles outside bounds are excluded structurally. When obstacles are present, `filterTris` runs to remove any triangles inside obstacle boundaries (necessary even without edge crossings, e.g., when one obstacle is fully contained inside another).
 
 Both modes produce a triangle mesh covering only the free space.
 
@@ -237,6 +238,7 @@ The library also exports these lower-level functions:
 | `constrainedDelaunay(pts, edges)` | Constrained Delaunay triangulation via `cdt2d`. |
 | `filterTris(...)` | Remove triangles that overlap obstacles or lie outside bounds. |
 | `mergeCells(...)` | Greedy concavity-bounded cell merging. |
+| `mergeCellsPolyanya(...)` | Polyanya-style two-phase merge (dead-end elimination + max-area priority queue). |
 | `stitchRings(a, b)` | Merge two adjacent cell boundary rings by removing shared edges. |
 | `concavityDepth(ring, pts)` | Max distance from any ring vertex to its convex hull boundary. |
 | `hullIdx(indices, pts)` | Andrew's monotone chain convex hull (returns indices). |
@@ -246,6 +248,8 @@ The library also exports these lower-level functions:
 | `computeRegionPorts(...)` | Generate entry/exit port points along region boundaries. |
 | `generateBoundaryPoints(...)` | Sample points around all obstacle boundaries. |
 | `generateBoundaryPointsWithEdges(...)` | Same as above, but returns constraint edges alongside points (for CDT). |
+| `unionObstacleBoundaries(rings)` | Union overlapping obstacle boundary rings into non-overlapping polygons (via `@flatten-js/core`). |
+| `resolveConstraintCrossings(...)` | Detect and split crossing constraint edges by inserting intersection points. |
 | `cross({ o, a, b })` | 2D cross product (orientation test). |
 | `circumcircle({ a, b, c })` | Circumscribed circle of a triangle. |
 | `dist2(a, b)` | Squared distance between two points. |

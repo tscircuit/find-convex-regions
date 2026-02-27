@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test"
-import { ConvexRegionsSolver } from "./lib/ConvexRegionsSolver"
-import { createMixedObstaclesInput } from "./tests/polygon-obstacles.shared"
+import { ConvexRegionsSolver } from "../lib/ConvexRegionsSolver"
+import { createMixedObstaclesInput } from "./polygon-obstacles.shared"
 
 test("mixed obstacles (vias, rects, polygons)", async () => {
   const solver = new ConvexRegionsSolver(createMixedObstaclesInput())

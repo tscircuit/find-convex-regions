@@ -36,6 +36,7 @@ export type ConvexRegionsComputeInput = {
   clearance: number
   concavityTolerance: number
   useConstrainedDelaunay?: boolean
+  usePolyanyaMerge?: boolean
   viaSegments?: number
 }
 
@@ -74,6 +75,7 @@ export type TriangulateStageOutput = GeneratePointsStageOutput & {
 
 export type MergeCellsStageInput = TriangulateStageOutput & {
   concavityTolerance: number
+  usePolyanyaMerge?: boolean
 }
 
 export type MergeCellsStageOutput = TriangulateStageOutput & {

@@ -18,12 +18,14 @@ export { inFreeSpace } from "./inFreeSpace"
 export { isDefined } from "./isDefined"
 export { MergeCellsSolver } from "./MergeCellsSolver"
 export { mergeCells } from "./mergeCells"
+export { mergeCellsPolyanya } from "./mergeCellsPolyanya"
 export { polyArea } from "./polyArea"
 export { ptSegDist } from "./ptSegDist"
 export { regionPath } from "./regionPath"
 export { rotatePoint } from "./rotatePoint"
 export { stitchRings } from "./stitchRings"
 export { TriangulateSolver } from "./TriangulateSolver"
+export { unionObstacleBoundaries } from "./unionObstacleBoundaries"
 
 export type {
   Bounds,

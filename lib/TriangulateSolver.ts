@@ -29,9 +29,11 @@ export class TriangulateSolver extends BaseSolver {
         this.input.pts,
         this.input.constraintEdges,
       )
-      // When obstacle boundaries overlap, CDT can create triangles inside
-      // the overlap zone — filterTris is needed to clean them up
-      validTris = this.input.hadCrossings
+      // Always filter when obstacles exist — even without edge crossings,
+      // one obstacle fully contained inside another can produce invalid triangles
+      const hasObstacles =
+        vias.length > 0 || rects.length > 0 || polygons.length > 0
+      validTris = hasObstacles
         ? filterTris({
             triangles: cdtTris,
             pts: this.input.pts,

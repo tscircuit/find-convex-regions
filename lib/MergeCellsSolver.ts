@@ -1,6 +1,7 @@
 import { BaseSolver } from "@tscircuit/solver-utils"
 import type { GraphicsObject } from "graphics-debug"
 import { mergeCells } from "./mergeCells"
+import { mergeCellsPolyanya } from "./mergeCellsPolyanya"
 import type { MergeCellsStageInput, MergeCellsStageOutput } from "./types"
 
 export class MergeCellsSolver extends BaseSolver {
@@ -13,11 +14,17 @@ export class MergeCellsSolver extends BaseSolver {
   }
 
   override _step(): void {
-    const merged = mergeCells({
-      triangles: this.input.validTris,
-      pts: this.input.pts,
-      concavityTolerance: this.input.concavityTolerance,
-    })
+    const merged =
+      this.input.usePolyanyaMerge !== false
+        ? mergeCellsPolyanya({
+            triangles: this.input.validTris,
+            pts: this.input.pts,
+          })
+        : mergeCells({
+            triangles: this.input.validTris,
+            pts: this.input.pts,
+            concavityTolerance: this.input.concavityTolerance,
+          })
 
     this.output = {
       pts: this.input.pts,

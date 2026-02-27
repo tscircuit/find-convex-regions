@@ -21,6 +21,7 @@ export default function App() {
   const [showHull, setShowHull] = useState(false)
   const [showPorts, setShowPorts] = useState(true)
   const [useCDT, setUseCDT] = useState(true)
+  const [usePolyanyaMerge, setUsePolyanyaMerge] = useState(true)
   const [viaSegments, setViaSegments] = useState<number | undefined>(undefined)
   const [dragIdx, setDragIdx] = useState(null)
   const [hoverRegion, setHoverRegion] = useState(null)
@@ -33,6 +34,7 @@ export default function App() {
       clearance: cl,
       concavityTolerance: concavityTol,
       useConstrainedDelaunay: useCDT,
+      usePolyanyaMerge,
       viaSegments,
     })
     solver.solve()
@@ -45,7 +47,7 @@ export default function App() {
         depths: [],
       }
     )
-  }, [bounds, vias, cl, concavityTol, useCDT, viaSegments])
+  }, [bounds, vias, cl, concavityTol, useCDT, usePolyanyaMerge, viaSegments])
 
   const getSvgPt = useCallback((e) => {
     const svg = svgRef.current
@@ -430,6 +432,23 @@ export default function App() {
                 onChange={(e) => setUseCDT(e.target.checked)}
               />
               Constrained Delaunay (CDT)
+            </label>
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                fontSize: 13,
+                cursor: "pointer",
+                marginBottom: 8,
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={usePolyanyaMerge}
+                onChange={(e) => setUsePolyanyaMerge(e.target.checked)}
+              />
+              Polyanya merge (strictly convex)
             </label>
             <div
               style={{

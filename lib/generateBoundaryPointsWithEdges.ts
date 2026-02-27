@@ -2,6 +2,7 @@ import { getOffsetPolygonPoints } from "./getOffsetPolygonPoints"
 import { resolveConstraintCrossings } from "./resolveConstraintCrossings"
 import { rotatePoint } from "./rotatePoint"
 import type { Bounds, Point, Polygon, Rect, Via } from "./types"
+import { unionObstacleBoundaries } from "./unionObstacleBoundaries"
 
 /**
  * Appends a closed ring of points and records consecutive constraint edges.
@@ -66,6 +67,9 @@ export const generateBoundaryPointsWithEdges = (params: {
   ringBoundaries.push(constraintEdges.length)
   addRing(boundsPts, allPts, constraintEdges)
 
+  // Collect all obstacle rings, then union overlapping ones before adding
+  const obstacleRings: Point[][] = []
+
   // Vias: viaSegments points per circle (default 8 = octagon)
   for (const via of vias) {
     const radius = via.diameter / 2 + clearance
@@ -77,12 +81,10 @@ export const generateBoundaryPointsWithEdges = (params: {
         y: via.center.y + radius * Math.sin(angle),
       })
     }
-    ringBoundaries.push(constraintEdges.length)
-    addRing(viaPts, allPts, constraintEdges)
+    obstacleRings.push(viaPts)
   }
 
   // Rects: corners only (4 points per rect)
-  // CDT constraint edges enforce the boundary — intermediate edge samples are redundant
   for (const rect of rects) {
     const halfWidth = rect.width / 2 + clearance
     const halfHeight = rect.height / 2 + clearance
@@ -92,12 +94,10 @@ export const generateBoundaryPointsWithEdges = (params: {
       rotatePoint({ localX: halfWidth, localY: halfHeight, rect }),
       rotatePoint({ localX: -halfWidth, localY: halfHeight, rect }),
     ]
-    ringBoundaries.push(constraintEdges.length)
-    addRing(rectPts, allPts, constraintEdges)
+    obstacleRings.push(rectPts)
   }
 
-  // Polygons: offset vertices only (no intermediate edge samples)
-  // CDT constraint edges enforce the boundary between vertices
+  // Polygons: offset vertices only
   for (const polygon of polygons) {
     if (polygon.points.length < 3) continue
     const offsetPoints = getOffsetPolygonPoints({
@@ -105,8 +105,15 @@ export const generateBoundaryPointsWithEdges = (params: {
       clearance,
       verticesOnly: true,
     })
+    obstacleRings.push(offsetPoints)
+  }
+
+  // Union overlapping obstacle boundaries before adding constraint edges
+  const mergedRings = unionObstacleBoundaries(obstacleRings)
+
+  for (const ring of mergedRings) {
     ringBoundaries.push(constraintEdges.length)
-    addRing(offsetPoints, allPts, constraintEdges)
+    addRing(ring, allPts, constraintEdges)
   }
 
   // Resolve crossing constraint edges from overlapping obstacle boundaries

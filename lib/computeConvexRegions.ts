@@ -5,6 +5,7 @@ import { generateBoundaryPoints } from "./generateBoundaryPoints"
 import { generateBoundaryPointsWithEdges } from "./generateBoundaryPointsWithEdges"
 import { hullIdx } from "./hullIdx"
 import { mergeCells } from "./mergeCells"
+import { mergeCellsPolyanya } from "./mergeCellsPolyanya"
 import type {
   ConvexRegionsComputeInput,
   ConvexRegionsComputeResult,
@@ -35,9 +36,11 @@ export const computeConvexRegions = (
     })
     pts = result.pts
     const cdtTris = constrainedDelaunay(pts, result.constraintEdges)
-    // When obstacle boundaries overlap, CDT can create triangles inside
-    // the overlap zone — filterTris is needed to clean them up
-    validTris = result.hadCrossings
+    // Always filter when obstacles exist — even without edge crossings,
+    // one obstacle fully contained inside another can produce invalid triangles
+    const hasObstacles =
+      vias.length > 0 || rects.length > 0 || polygons.length > 0
+    validTris = hasObstacles
       ? filterTris({
           triangles: cdtTris,
           pts,
@@ -68,11 +71,10 @@ export const computeConvexRegions = (
       polygons,
     })
   }
-  const { cells, depths } = mergeCells({
-    triangles: validTris,
-    pts,
-    concavityTolerance,
-  })
+  const { cells, depths } =
+    input.usePolyanyaMerge !== false
+      ? mergeCellsPolyanya({ triangles: validTris, pts })
+      : mergeCells({ triangles: validTris, pts, concavityTolerance })
 
   const regions = cells.map((cell) =>
     cell.map((i) => pts[i]).filter(isDefinedPoint),
