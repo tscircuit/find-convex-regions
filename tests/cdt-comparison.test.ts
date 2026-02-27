@@ -1,19 +1,19 @@
 import { expect, test } from "bun:test"
-import { ConvexRegionsSolver } from "./lib/ConvexRegionsSolver"
-import { computeConvexRegions } from "./lib/computeConvexRegions"
-import { constrainedDelaunay } from "./lib/constrainedDelaunay"
-import { delaunay } from "./lib/delaunay"
-import { filterTris } from "./lib/filterTris"
-import { generateBoundaryPointsWithEdges } from "./lib/generateBoundaryPointsWithEdges"
+import { ConvexRegionsSolver } from "../lib/ConvexRegionsSolver"
+import { computeConvexRegions } from "../lib/computeConvexRegions"
+import { constrainedDelaunay } from "../lib/constrainedDelaunay"
+import { delaunay } from "../lib/delaunay"
+import { filterTris } from "../lib/filterTris"
+import { generateBoundaryPointsWithEdges } from "../lib/generateBoundaryPointsWithEdges"
 import {
   countEdgeCrossings,
   createDiagonalWallInput,
   createSparseDiagonalWallPoints,
   createSparseHorizontalWallPoints,
   createThinHorizontalWallInput,
-} from "./tests/cdt-comparison.shared"
-import { createPolygonObstaclesInput } from "./tests/polygon-obstacles.shared"
-import { createStaggeredJumpersInput } from "./tests/staggered-jumpers.shared"
+} from "./cdt-comparison.shared"
+import { createPolygonObstaclesInput } from "./polygon-obstacles.shared"
+import { createStaggeredJumpersInput } from "./staggered-jumpers.shared"
 
 // --- Core triangulation tests: prove unconstrained fails, CDT fixes it ---
 

@@ -1,13 +1,13 @@
 import { expect, test } from "bun:test"
-import { computeConvexRegions } from "./lib/computeConvexRegions"
-import { cross } from "./lib/cross"
-import type { ConvexRegionsComputeInput, Point } from "./lib/types"
+import { computeConvexRegions } from "../lib/computeConvexRegions"
+import { cross } from "../lib/cross"
+import type { ConvexRegionsComputeInput, Point } from "../lib/types"
 import {
   createThinHorizontalWallInput,
   createDiagonalWallInput,
-} from "./tests/cdt-comparison.shared"
-import { createPolygonObstaclesInput } from "./tests/polygon-obstacles.shared"
-import { createStaggeredJumpersInput } from "./tests/staggered-jumpers.shared"
+} from "./cdt-comparison.shared"
+import { createPolygonObstaclesInput } from "./polygon-obstacles.shared"
+import { createStaggeredJumpersInput } from "./staggered-jumpers.shared"
 
 // --- Helpers ---
 

@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test"
-import { ConvexRegionsSolver } from "./lib/ConvexRegionsSolver"
-import { createPolygonObstaclesInput } from "./tests/polygon-obstacles.shared"
+import { ConvexRegionsSolver } from "../lib/ConvexRegionsSolver"
+import { createPolygonObstaclesInput } from "./polygon-obstacles.shared"
 
 test("polygon obstacles", async () => {
   const solver = new ConvexRegionsSolver(createPolygonObstaclesInput())

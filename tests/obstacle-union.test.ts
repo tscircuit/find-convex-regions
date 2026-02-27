@@ -1,7 +1,7 @@
 import { expect, test, describe } from "bun:test"
-import { unionObstacleBoundaries } from "./lib/unionObstacleBoundaries"
-import { computeConvexRegions } from "./lib/computeConvexRegions"
-import type { Point } from "./lib/types"
+import { unionObstacleBoundaries } from "../lib/unionObstacleBoundaries"
+import { computeConvexRegions } from "../lib/computeConvexRegions"
+import type { Point } from "../lib/types"
 
 /** Generate octagon ring centered at (cx, cy) with given radius. */
 function octagon(cx: number, cy: number, radius: number): Point[] {
