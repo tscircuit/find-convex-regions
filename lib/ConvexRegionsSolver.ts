@@ -72,6 +72,24 @@ export class ConvexRegionsSolver extends BasePipelineSolver<ConvexRegionsCompute
       return { points: [], lines: [], rects: [], circles: [], texts: [] }
     }
 
+    const boundsWidth =
+      this.inputProblem.bounds.maxX - this.inputProblem.bounds.minX
+    const boundsHeight =
+      this.inputProblem.bounds.maxY - this.inputProblem.bounds.minY
+    const maxDim = Math.max(boundsWidth, boundsHeight, Number.EPSILON)
+
+    // Normalize tiny coordinate domains (e.g. [-1, 1]) so visualization stays
+    // readable and consistent with larger board-scale snapshots.
+    const targetVisualSize = 400
+    const displayScale = Math.max(1, targetVisualSize / maxDim)
+    const displayOffsetX = -this.inputProblem.bounds.minX * displayScale
+    const displayOffsetY = -this.inputProblem.bounds.minY * displayScale
+
+    const toDisplayPoint = (point: { x: number; y: number }) => ({
+      x: point.x * displayScale + displayOffsetX,
+      y: point.y * displayScale + displayOffsetY,
+    })
+
     // Generate polygon obstacle lines
     const polygonLines = (this.inputProblem.polygons ?? []).flatMap(
       (polygon) => {
@@ -79,10 +97,7 @@ export class ConvexRegionsSolver extends BasePipelineSolver<ConvexRegionsCompute
         return pts.map((p, i) => {
           const next = pts[(i + 1) % pts.length]!
           return {
-            points: [
-              { x: p.x, y: p.y },
-              { x: next.x, y: next.y },
-            ],
+            points: [toDisplayPoint(p), toDisplayPoint(next)],
             strokeColor: "#ff9f43",
             strokeWidth: 2,
           }
@@ -110,10 +125,7 @@ export class ConvexRegionsSolver extends BasePipelineSolver<ConvexRegionsCompute
       return corners.map((p, i) => {
         const next = corners[(i + 1) % corners.length]!
         return {
-          points: [
-            { x: p.x, y: p.y },
-            { x: next.x, y: next.y },
-          ],
+          points: [toDisplayPoint(p), toDisplayPoint(next)],
           strokeColor: "#ff6b6b",
           strokeWidth: 2,
         }
@@ -122,8 +134,7 @@ export class ConvexRegionsSolver extends BasePipelineSolver<ConvexRegionsCompute
 
     return {
       points: result.pts.map((pt) => ({
-        x: pt.x,
-        y: pt.y,
+        ...toDisplayPoint(pt),
         color: "#38b6ff",
       })),
       lines: [
@@ -131,10 +142,7 @@ export class ConvexRegionsSolver extends BasePipelineSolver<ConvexRegionsCompute
           region.map((p, i) => {
             const next = region[(i + 1) % region.length] ?? p
             return {
-              points: [
-                { x: p.x, y: p.y },
-                { x: next.x, y: next.y },
-              ],
+              points: [toDisplayPoint(p), toDisplayPoint(next)],
               strokeColor: "#4ecb82",
             }
           }),
@@ -144,14 +152,14 @@ export class ConvexRegionsSolver extends BasePipelineSolver<ConvexRegionsCompute
       ],
       rects: [],
       circles: (this.inputProblem.vias ?? []).map((via) => ({
-        center: { x: via.center.x, y: via.center.y },
-        radius: via.diameter / 2,
+        center: toDisplayPoint(via.center),
+        radius: (via.diameter / 2) * displayScale,
         stroke: "#ff6b6b",
       })),
       texts: [
         {
-          x: this.inputProblem.bounds.minX + 8,
-          y: this.inputProblem.bounds.minY + 16,
+          x: 8,
+          y: 16,
           text: `regions=${result.regions.length}`,
           color: "#ffffff",
         },
